@@ -1,7 +1,9 @@
-SILANG - Simple language compiler
+SILANG - Silent language compiler
 
 This compiler takes as input C-like language and generates abstract intermediate code
-while describing what is going on with the compiler on stdout
+while describing what is going on with the compiler
+
+This is just a demonstration on how to write a simple language compiler
 
 Compiler
 

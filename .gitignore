@@ -1,4 +1,5 @@
 silang
+out.silcode
 out/*.d
 out/*.o
 *.d

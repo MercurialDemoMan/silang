@@ -39,7 +39,7 @@ int main(int argc, char* argv[])
 
 	//preprocess the input file
 	//and output the result into a temporary file
-	//whick will be used as parser input
+	//which will be used as parser input
 	FILE* preprocessed_file = fopen("/tmp/tmp.sil", "w+b");
 	if(preprocessed_file == NULL)
 	{

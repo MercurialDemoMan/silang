@@ -12,7 +12,7 @@ int main(int argc, char* argv[])
 	}
 	
 	//open input
-	FILE* in = fopen(argv[1], "rb");
+	FILE* in = std::fopen(argv[1], "rb");
 	if(in == NULL)
 	{
 		std::printf("error: cannot open input file\n");
@@ -24,12 +24,12 @@ int main(int argc, char* argv[])
 	if(argc == 3)
 	{
 		//open specified output
-		out = fopen(argv[2], "wb");
+		out = std::fopen(argv[2], "wb");
 	}
 	else
 	{
 		//open standard output
-		out = fopen("out.silcode", "wb");
+		out = std::fopen("out.silcode", "wb");
 	}
 	if(out == NULL)
 	{
@@ -54,7 +54,7 @@ int main(int argc, char* argv[])
 	if(succ == true)
 	{
 		//reset file seeker
-		fseek(preprocessed_file, 0, SEEK_SET);
+		std::fseek(preprocessed_file, 0, SEEK_SET);
 
 		//start parsing
 		Parser* parser = new Parser();
@@ -65,9 +65,9 @@ int main(int argc, char* argv[])
 	//cleanup
 	delete preprocessor;
 
-	fclose(preprocessed_file);
-	fclose(in);
-	fclose(out);
+	std::fclose(preprocessed_file);
+	std::fclose(in);
+	std::fclose(out);
 }
 
 

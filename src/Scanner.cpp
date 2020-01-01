@@ -100,6 +100,7 @@ Scanner::Scanner(FILE* input)
  */
 void Scanner::parseId(std::string& id, Token& t)
 {
+	//assume it is a keyword
 	t.type = TokenType::Keyword;
 
 	if(id == "byte")   { t.attribute.keyword = KeywordType::Byte; } else
@@ -113,6 +114,7 @@ void Scanner::parseId(std::string& id, Token& t)
 	if(id == "while")  { t.attribute.keyword = KeywordType::While; } else
 	if(id == "for")    { t.attribute.keyword = KeywordType::For; } else
 	if(id == "pack")   { t.attribute.keyword = KeywordType::Pack; } else
+	//if all checks failed -> token is identificator
 	{ t.type = TokenType::Id; t.attribute.litString = id; }
 }
 
@@ -161,11 +163,6 @@ void Scanner::ungetCharFromSource(int c)
  */
 Scanner::Token Scanner::getToken()
 {
-	if(pSource == NULL)
-	{
-		throw std::runtime_error("Input file is not set\n");
-	}
-
 	//create token
 	Token t;
 
@@ -182,7 +179,7 @@ Scanner::Token Scanner::getToken()
 	char hexBuffer[3] = { 0 };
 
 	//main loop
-	for(;;)
+	while(true)
 	{
 		//fetch char from source
 		charBuffer = this->getCharFromSource();
@@ -191,110 +188,137 @@ Scanner::Token Scanner::getToken()
 		{
 			case Scanner::State::Start:
 			{
+				//skip white spaces
 				if(charBuffer == '\n' || std::isspace(charBuffer))
 				{ 
 					pState = Scanner::State::Start;
 				}
+				//start scanning identificator
 				else if(std::isalpha(charBuffer) || charBuffer == '_')
 				{
 					pBuffer.push_back((char)charBuffer);
 					pState = Scanner::State::Id;
 				}
+				//start scanning number
 				else if(std::isdigit(charBuffer))
 				{
 					pBuffer.push_back((char)charBuffer);
 					pState  = Scanner::State::Number;
 				}
+				//start scanning string
 				else if(charBuffer == '\"')
 				{
 					pState = Scanner::State::String;
 				}
+				//start scanning != token
 				else if(charBuffer == '!')
 				{
 					pState = Scanner::State::NonEqu;
 				}
+				//start scanning < or <= token
 				else if(charBuffer == '<')
 				{
 					pState = Scanner::State::Less;
 				}
+				//start scanning > or >= token
 				else if(charBuffer == '>')
 				{
 					pState = Scanner::State::More;
 				}
+				//start scanning = or == token
 				else if(charBuffer == '=')
 				{
 					pState = Scanner::State::Assign;
 				}
+				//return + token
 				else if(charBuffer == '+')
 				{
 					return Token(Scanner::TokenType::Plus);
 				}
+				//return - token
 				else if(charBuffer == '-')
 				{
 					return Token(Scanner::TokenType::Minus);
 				}
+				//return * token
 				else if(charBuffer == '*')
 				{
 					return Token(Scanner::TokenType::Mul);
 				}
+				//return / token
 				else if(charBuffer == '/')
 				{
 					return Token(Scanner::TokenType::Div);
 				}
+				//return ( token
 				else if(charBuffer == '(')
 				{
 					return Token(Scanner::TokenType::LeftBracket);
 				}
+				//return ) token
 				else if(charBuffer == ')')
 				{
 					return Token(Scanner::TokenType::RightBracket);
 				}
+				//return { token
 				else if(charBuffer == '{')
 				{
 					return Token(Scanner::TokenType::LeftCurlyBracket);
 				}
+				//return } token
 				else if(charBuffer == '}')
 				{
 					return Token(Scanner::TokenType::RightCurlyBracket);
 				}
+				//return , token
 				else if(charBuffer == ',')
 				{
 					return Token(Scanner::TokenType::Comma);
 				}
+				//return . token
 				else if(charBuffer == '.')
 				{
 					return Token(Scanner::TokenType::Dot);
 				}
+				//return : token
 				else if(charBuffer == ':')
 				{
 					return Token(Scanner::TokenType::Colon);
 				}
+				//return ; token
 				else if(charBuffer == ';')
 				{
 					return Token(Scanner::TokenType::SemiColon);
 				}
+				//start ignoring line or multiple lies
 				else if(charBuffer == '#')
 				{
 					pState = Scanner::State::StartComment;
 				}
+				//return end of file token
 				else if(charBuffer == EOF)
 				{
 					return Token(Scanner::TokenType::Eof);
 				}
+				//any other characted is invalid
 				else
 				{
-					throw std::runtime_error("Unexpected symbol\n");
+					std::printf("Unexpected symbol\n");
+					return Token(Scanner::TokenType::Null);
 				}
 
 				break;
 			}
 
+			//scanning identificator
 			case Scanner::State::Id:
 			{
+				//valid identificator characters
 				if(std::isalnum(charBuffer) || charBuffer == '_')
 				{
 					pBuffer.push_back((char)charBuffer);
 				}
+				//any invalid characted stops scanner,and returns identificator or keyword
 				else
 				{
 					this->ungetCharFromSource(charBuffer);
@@ -305,12 +329,15 @@ Scanner::Token Scanner::getToken()
 				break;
 			}
 
+			//scanning number
 			case Scanner::State::Number:
 			{
+				//digits
 				if(std::isdigit(charBuffer))
 				{
 					pBuffer.push_back((char)charBuffer);
 				}
+				//change base to hexadecimal
 				else if(charBuffer == 'x')
 				{
 					if(pBuffer.size() == 1 && pBuffer[0] == '0')
@@ -320,9 +347,11 @@ Scanner::Token Scanner::getToken()
 					}
 					else
 					{
-						throw std::runtime_error("Number in hex base must be lead by: \"0x\"\n");
+						std::printf("Number in hex base must be lead by: \"0x\"\n");
+						return Token(Scanner::TokenType::Null);
 					}
 				}
+				//change base to octal
 				else if(charBuffer == 'o')
 				{
 					if(pBuffer.size() == 1 && pBuffer[0] == '0')
@@ -332,9 +361,11 @@ Scanner::Token Scanner::getToken()
 					}
 					else
 					{
-						throw std::runtime_error("Number in oct base must be lead by: \"0o\"\n");
+						std::printf("Number in oct base must be lead by: \"0o\"\n");
+						return Token(Scanner::TokenType::Null);
 					}
 				}
+				//change base to binary
 				else if(charBuffer == 'b')
 				{
 					if(pBuffer.size() == 1 && pBuffer[0] == '0')
@@ -344,19 +375,23 @@ Scanner::Token Scanner::getToken()
 					}
 					else
 					{
-						throw std::runtime_error("Number in bin base must be lead by: \"0b\"\n");
+						std::printf("Number in bin base must be lead by: \"0b\"\n");
+						return Token(Scanner::TokenType::Null);
 					}
 				}
+				//we are no longer scanning integer but float
 				else if(charBuffer == '.')
 				{
 					pBuffer.push_back((char)charBuffer);
 					pState = Scanner::State::NumberFloatingPoint;
 				}
+				//we are no longer scanning integer but float
 				else if(std::tolower(charBuffer) == 'e')
 				{
 					pBuffer.push_back((char)charBuffer);
 					pState = Scanner::State::NumberExp;
 				}
+				//any invalid character will cause integer to be returned
 				else
 				{
 					ungetCharFromSource(charBuffer);
@@ -367,6 +402,7 @@ Scanner::Token Scanner::getToken()
 				break;
 			}
 
+			//scanning hex integer
 			case Scanner::State::NumberHex:
 			{
 				if(std::isdigit(charBuffer) || (std::tolower(charBuffer) >= 'a' && std::tolower(charBuffer) <= 'f'))
@@ -383,6 +419,7 @@ Scanner::Token Scanner::getToken()
 				break;
 			}
 
+			//scanning oct integer
 			case Scanner::State::NumberOct:
 			{
 				if(charBuffer >= '0' && charBuffer <= '7')
@@ -399,6 +436,7 @@ Scanner::Token Scanner::getToken()
 				break;
 			}
 
+			//scanning bin integer
 			case Scanner::State::NumberBin:
 			{
 				if(charBuffer >= '0' && charBuffer <= '1')
@@ -415,6 +453,7 @@ Scanner::Token Scanner::getToken()
 				break;
 			}
 
+			//start scanning floating point fraction
 			case Scanner::State::NumberFloatingPoint:
 			{
 				if(std::isdigit(charBuffer))
@@ -424,12 +463,14 @@ Scanner::Token Scanner::getToken()
 				}
 				else
 				{
-					throw std::runtime_error("Unexpected symbol near number, after floating point should be digit\n");
+					std::printf("Unexpected symbol near number, after floating point should be digit\n");
+					return Token(Scanner::TokenType::Null);
 				}
 
 				break;
 			}
 
+			//scanning floating point fraction
 			case Scanner::State::NumberFraction:
 			{
 				if(std::isdigit(charBuffer))
@@ -451,6 +492,7 @@ Scanner::Token Scanner::getToken()
 				break;
 			}
 
+			//scanning exponent
 			case Scanner::State::NumberExp:
 			{
 				if(std::isdigit(charBuffer))
@@ -465,12 +507,14 @@ Scanner::Token Scanner::getToken()
 				}
 				else
 				{
-					throw std::runtime_error("Unexpected symbol near exponential number, after \"e\" symbol should be digit or sign\n");
+					std::printf("Unexpected symbol near exponential number, after \"e\" symbol should be digit or sign\n");
+					return Token(Scanner::TokenType::Null);
 				}
 
 				break;
 			}
 
+			//scanning sign
 			case Scanner::State::NumberExpSign:
 			{
 				if(std::isdigit(charBuffer))
@@ -480,12 +524,14 @@ Scanner::Token Scanner::getToken()
 				}
 				else
 				{
-					throw std::runtime_error("Unexpected symbol near exponential number, after exponential sign should be digit\n");
+					std::printf("Unexpected symbol near exponential number, after exponential sign should be digit\n");
+					return Token(Scanner::TokenType::Null);
 				}
 
 				break;
 			}
 
+			//scanning exponent tail
 			case Scanner::State::NumberExpTail:
 			{
 				if(std::isdigit(charBuffer))
@@ -502,6 +548,7 @@ Scanner::Token Scanner::getToken()
 				break;
 			}
 
+			//scanning string
 			case Scanner::State::String:
 			{
 				if(std::ext::isprintable(charBuffer))
@@ -523,12 +570,14 @@ Scanner::Token Scanner::getToken()
 				}
 				else
 				{
-					throw std::runtime_error("Non ascii symbol inside a string\n");
+					std::printf("Non ascii symbol inside a string\n");
+					return Token(Scanner::TokenType::Null);
 				}
 
 				break;
 			}
 
+			//scanning string escape sequence
 			case Scanner::State::StringEscape:
 			{
 				if(charBuffer == 'a')
@@ -586,11 +635,6 @@ Scanner::Token Scanner::getToken()
 					pBuffer.push_back('\"');
 					pState = Scanner::State::String;
 				}
-				else if(charBuffer == '?')
-				{
-					pBuffer.push_back('?');
-					pState = Scanner::State::String;
-				}
 				else if(charBuffer == 'n')
 				{
 					pBuffer.push_back('\n');
@@ -602,12 +646,14 @@ Scanner::Token Scanner::getToken()
 				}
 				else
 				{
-					throw std::runtime_error("Unknown escape sequence\n");
+					std::printf("Unknown escape sequence\n");
+					return Token(Scanner::TokenType::Null);
 				}
 
 				break;
 			}
 
+			//scanning first digit of hex escape sequence
 			case Scanner::State::StringEscapeHex1:
 			{
 				charBuffer = std::tolower(charBuffer);
@@ -619,12 +665,14 @@ Scanner::Token Scanner::getToken()
 				}
 				else
 				{
-					throw std::runtime_error("Hex escape sequence expects two heaxadecimal numbers\n");
+					std::printf("Hex escape sequence expects two heaxadecimal numbers\n");
+					return Token(Scanner::TokenType::Null);
 				}
 
 				break;
 			}
 
+			//scanning second digit of hex escape sequence
 			case Scanner::State::StringEscapeHex2:
 			{
 				charBuffer = std::tolower(charBuffer);
@@ -637,12 +685,14 @@ Scanner::Token Scanner::getToken()
 				}
 				else
 				{
-					throw std::runtime_error("Hex escape sequence expects two heaxadecimal numbers\n");
+					std::printf("Hex escape sequence expects two heaxadecimal numbers\n");
+					return Token(Scanner::TokenType::Null);
 				}
 
 				break;
 			}
 
+			//scanning != token
 			case Scanner::State::NonEqu:
 			{
 				if(charBuffer == '=')
@@ -651,12 +701,14 @@ Scanner::Token Scanner::getToken()
 				}
 				else
 				{
-					throw std::runtime_error("Unexpected symbol after \"!\"\n");
+					std::printf("Unexpected symbol after \"!\"\n");
+					return Token(Scanner::TokenType::Null);
 				}
 
 				break;
 			}
 
+			//scanning < or <= token
 			case Scanner::State::Less:
 			{
 				if(charBuffer == '=')
@@ -672,6 +724,7 @@ Scanner::Token Scanner::getToken()
 				break;
 			}
 
+			//scanning > or >= token
 			case Scanner::State::More:
 			{
 				if(charBuffer == '=')
@@ -687,6 +740,7 @@ Scanner::Token Scanner::getToken()
 				break;
 			}
 
+			//scanning = or == token
 			case Scanner::State::Assign:
 			{
 				if(charBuffer == '=')
@@ -702,6 +756,7 @@ Scanner::Token Scanner::getToken()
 				break;
 			}
 
+			//scanning line comment or multiline comment
 			case Scanner::State::StartComment:
 			{
 				if(charBuffer == '#')
@@ -716,6 +771,7 @@ Scanner::Token Scanner::getToken()
 				break;
 			}
 
+			//skipping line
 			case Scanner::State::Comment:
 			{
 				if(charBuffer == '\n' || charBuffer == EOF)
@@ -730,6 +786,7 @@ Scanner::Token Scanner::getToken()
 				break;
 			}
 
+			//skipping multiple lines
 			case Scanner::State::MulComment:
 			{
 				if(charBuffer == '#' || charBuffer == EOF)
@@ -744,6 +801,7 @@ Scanner::Token Scanner::getToken()
 				break;
 			}
 
+			//end multiline comment
 			case Scanner::State::EndMulComment:
 			{
 				if(charBuffer == '#' || charBuffer == EOF)

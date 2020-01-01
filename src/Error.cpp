@@ -7,7 +7,10 @@ Error::Error(Error::Type t, const char* msg, ...)
 {
 	this->type = t;
 
-	std::printf("error: ");
+	if(t != Error::Type::Ok)
+	{
+		std::printf("error: ");
+	}
 
 	va_list args;
 

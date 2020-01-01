@@ -18,39 +18,38 @@ public:
 	 */
 	enum class TokenType
 	{
-		Null,
-		Acc,
-		Ret,
+		Null,				// invalid token
+		Acc,				// special data token for evaluating expressions
+		Ret,				// special data token for evaluating expressions
 
-		Eol, 
-		Eof, 
-		LeftCurlyBracket, 
-		RightCurlyBracket,
+		Eof, 				// end of file
+		LeftCurlyBracket, 	// {
+		RightCurlyBracket,  // }
 
-		LeftBracket, 
-		RightBracket, 
-		Dot,
-		Colon, 
-		Comma, 
-		SemiColon,
+		LeftBracket, 		// (
+		RightBracket, 		// )
+		Dot,				// .
+		Colon, 				// :
+		Comma, 				// ,
+		SemiColon,			// ;
 
-		Assign, 
-		Less, 
-		More, 
-		LessEqu, 
-		MoreEqu, 
-		Equ,
-		NonEqu, 
-		Plus, 
-		Minus, 
-		Mul, 
-		Div, 
+		Assign, 			// =
+		Less, 				// <
+		More, 				// >
+		LessEqu, 			// <=
+		MoreEqu, 			// >=
+		Equ,				// ==
+		NonEqu, 			// !=
+		Plus, 				// +
+		Minus, 				// -
+		Mul, 				// *
+		Div, 				// /
 
-		Id, 
-		Int,
-		Float, 
-		String, 
-		Keyword,
+		Id, 				// identificator
+		Int,				// integer
+		Float, 				// floating point number
+		String, 			// literal string
+		Keyword,			// special identificator
 	};
 
 	/**
@@ -58,19 +57,19 @@ public:
 	 */
 	enum class KeywordType
 	{
-		Null,
+		Null,	// invalid keyword
 
-		Func, 
-		Else, 
-		If, 
-		Return, 
-		While, 
-		For,
-		Byte,
-		Int, 
-		Float,
-		Pack,
-		Void,
+		Func, 	// func
+		Else, 	// else
+		If, 	// if
+		Return, // return
+		While, 	// while
+		For,	// for
+		Byte,	// byte
+		Int, 	// int
+		Float,	// float
+		Pack,	// pack
+		Void,	// void
 	};
 
 	/**
@@ -78,8 +77,10 @@ public:
 	 */
 	struct Token
 	{
+		//token type
 		TokenType type;
 
+		//based on type, token can have attribute
 		struct TokenAttribute
 		{
 			std::string litString;
@@ -88,9 +89,11 @@ public:
 			KeywordType keyword;
 		} attribute;
 
+		//constructors
 		Token() 		   { type = TokenType::Null; }
 		Token(TokenType t) { type = t; }
 
+		//debug print
 		void print();
 	};
 
@@ -101,29 +104,29 @@ private:
 	 */
 	enum class State
 	{
-		Start, 
-		Id,
-		Number,
-		NumberHex,
-		NumberOct,
-		NumberBin,
-		NumberFloatingPoint,
-		NumberFraction,
-		NumberExp,
-		NumberExpSign,
-		NumberExpTail,
-		String,
-		StringEscape,
-		StringEscapeHex1,
-		StringEscapeHex2,
-		NonEqu,
-		Less,
-		More,
-		Assign,
-		StartComment,
-		Comment,
-		MulComment,
-		EndMulComment,
+		Start, 					// start scanning token
+		Id,						// scanning identificator
+		Number,					// scanning integer or float
+		NumberHex,				// scanning integer in hexadecimal base
+		NumberOct,				// scanning integer in octal base
+		NumberBin,				// scanning integer in binary base
+		NumberFloatingPoint,	// start scanning float fraction
+		NumberFraction,			// scanning float fraction
+		NumberExp,				// start scanning number exponent
+		NumberExpSign,			// start scanning number exponent
+		NumberExpTail,			// scanning number exponent
+		String,					// scanning literal string
+		StringEscape,			// start scanning escape sequence in string
+		StringEscapeHex1,		// scanning hexadecimal escape sequence in string
+		StringEscapeHex2,		// scanning hexadecimal escape sequence in string
+		NonEqu,					// scanning "!=" token
+		Less,					// scanning "<" or "<=" token
+		More,					// scanning ">" or ">=" token
+		Assign,					// scanning "=" or "==" token
+		StartComment,			// skiping line
+		Comment,				// skiping line
+		MulComment,				// skiping multiple lines
+		EndMulComment,			// skiping multiple lines
 	} pState;
 
 	/**

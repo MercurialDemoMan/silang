@@ -1,5 +1,3 @@
-$inc "lib.sil"
-
 ##
 # calculate factorial
 ##
@@ -15,7 +13,7 @@ func fact(int n): int
 	}
 }
 
-func main(int argc, ptr_t argv): int
+func main(int argc, int argv): int
 {
 	int iterations = 4 + argc * 200;
 

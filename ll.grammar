@@ -27,23 +27,17 @@
 				<pack-item-list> -> ; FLOAT ID <pack-item-list>
 				<pack-item-list> -> ; }
 
-		/* function definition arguments */
-			<def-args> -> BYTE   ID <def-args-list>
-			<def-args> -> INT    ID <def-args-list>
-			<def-args> -> FLOAT  ID <def-args-list>
-			<def-args> -> ID     ID <def-args-list>
-			<def-args> -> )
-				<def-args-list> -> , BYTE   ID <def-args-list>
-				<def-args-list> -> , INT    ID <def-args-list>
-				<def-args-list> -> , FLOAT  ID <def-args-list>
-				<def-args-list> -> , ID     ID <def-args-list>
-				<def-args-list> -> )
-
-		/* function call arguments */
-			<args> -> <expr> <args-list>
-			<args> -> )
-				<args-list> -> , <expr> <args-list>
-				<args-list> -> )
+	/* function definition arguments */
+		<def-args> -> BYTE   ID <def-args-list>
+		<def-args> -> INT    ID <def-args-list>
+		<def-args> -> FLOAT  ID <def-args-list>
+		<def-args> -> ID     ID <def-args-list>
+		<def-args> -> )
+			<def-args-list> -> , BYTE   ID <def-args-list>
+			<def-args-list> -> , INT    ID <def-args-list>
+			<def-args-list> -> , FLOAT  ID <def-args-list>
+			<def-args-list> -> , ID     ID <def-args-list>
+			<def-args-list> -> )
 
 	/* function return type */
 		<func-type> -> BYTE
@@ -77,6 +71,12 @@
 
 	/* end of body */
 		<body> -> } 
+
+	/* function call arguments */
+		<args> -> <expr> <args-list>
+		<args> -> )
+			<args-list> -> , <expr> <args-list>
+			<args-list> -> )
 
 /* expression */
 

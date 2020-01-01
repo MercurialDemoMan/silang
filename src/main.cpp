@@ -4,45 +4,73 @@
 
 int main(int argc, char* argv[])
 {
-	if(argc != 3)
+	//check number of arguments
+	if(argc < 2)
 	{
-		return 0;
+		std::printf("silang [input.sil] [optional: out.silcode]\n");
+		return 1;
 	}
 	
+	//open input
 	FILE* in = fopen(argv[1], "rb");
 	if(in == NULL)
 	{
-		return 0;
+		std::printf("error: cannot open input file\n");
+		return 1;
 	}
-	FILE* out = fopen(argv[2], "wb");
+
+	//open output
+	FILE* out;
+	if(argc == 3)
+	{
+		//open specified output
+		out = fopen(argv[2], "wb");
+	}
+	else
+	{
+		//open standard output
+		out = fopen("out.silcode", "wb");
+	}
 	if(out == NULL)
 	{
-		return 0;
+		std::printf("error: cannot open output file\n");
+		return 1;
 	}
 
-	Preprocessor* preprocessor = new Preprocessor();
-
+	//preprocess the input file
+	//and output the result into a temporary file
+	//whick will be used as parser input
 	FILE* preprocessed_file = fopen("/tmp/tmp.sil", "w+b");
-
 	if(preprocessed_file == NULL)
 	{
-		std::printf("FUCK\n");
+		std::printf("error: cannot access /tmp/tmp.sil file\n");
 	}
+	Preprocessor* preprocessor = new Preprocessor();
 
+	//do the preprocessing
 	bool succ = preprocessor->preprocess(in, preprocessed_file);
 
-	fseek(preprocessed_file, 0, SEEK_SET);
-
+	//if preprocessor generated no errors we can start parsing
 	if(succ == true)
 	{
+		//reset file seeker
+		fseek(preprocessed_file, 0, SEEK_SET);
+
+		//start parsing
 		Parser* parser = new Parser();
 		parser->parse(preprocessed_file, out);
 		delete parser;
 	}
 
+	//cleanup
 	delete preprocessor;
 
 	fclose(preprocessed_file);
 	fclose(in);
 	fclose(out);
 }
+
+
+
+
+

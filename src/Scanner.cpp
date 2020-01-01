@@ -7,7 +7,6 @@ static const char* ScannerTokenTypeString[] =
 {
 	[(u32)Scanner::TokenType::Null] = "TokenType::Null",
 
-	[(u32)Scanner::TokenType::Eol] = "TokenType::Eol", 
 	[(u32)Scanner::TokenType::Eof] = "TokenType::Eof", 
 	[(u32)Scanner::TokenType::LeftCurlyBracket] = "TokenType::LeftCurlyBracket", 
 	[(u32)Scanner::TokenType::RightCurlyBracket] = "TokenType::RightCurlyBracket",

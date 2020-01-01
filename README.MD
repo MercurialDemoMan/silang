@@ -28,7 +28,7 @@ Preprocessor.hpp/Preprocessor.cpp module
 
 Scanner.hpp/Scanner.cpp module
 
-	Takes input file, divides it into tokens and is sending it sequentially to parser needs
+	Takes input file, divides it into tokens and is sending it sequentially based on parsers needs
 
 Parser.hpp/Parser.cpp module
 

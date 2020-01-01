@@ -81,7 +81,7 @@
 /* expression */
 
 	//expects the first token to already be loaded
-	//eats the last token which the expression cannot use for evaluating expression
+	//eats the last token
 	<expr> -> <expr> + <expr>
 	<expr> -> <expr> - <expr>
 	<expr> -> <expr> * <expr>

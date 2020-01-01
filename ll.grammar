@@ -1,65 +1,107 @@
-<prog> -> FUNC ID ( <def-args> : <func-type> { <body> <prog>
-<prog> -> BYTE   ID ; <prog>
-<prog> -> BYTE   ID = <expr> ; <prog>
-<prog> -> INT    ID ; <prog>
-<prog> -> INT    ID = <expr> ; <prog>
-<prog> -> FLOAT  ID ; <prog>
-<prog> -> FLOAT  ID = <expr> ; <prog>
-<prog> -> ID     ID ; <prog>
-<prog> -> EOF
+/* main program */
 
-<prog> -> PACK ID { <pack-item> <prog>
+	/* function definition */
+		<prog> -> FUNC ID ( <def-args> : <func-type> { <body> <prog>
 
-<pack-item> -> BYTE ID <pack-item-list>
-<pack-item> -> INT ID <pack-item-list>
-<pack-item> -> FLOAT ID <pack-item-list>
+	/* variable definition */
+		<prog> -> BYTE   ID ; <prog>
+		<prog> -> BYTE   ID = <expr> ; <prog>
+		<prog> -> INT    ID ; <prog>
+		<prog> -> INT    ID = <expr> ; <prog>
+		<prog> -> FLOAT  ID ; <prog>
+		<prog> -> FLOAT  ID = <expr> ; <prog>
+		<prog> -> ID     ID ; <prog>
 
-<pack-item-list> -> ; BYTE ID <pack-item-list>
-<pack-item-list> -> ; INT ID <pack-item-list>
-<pack-item-list> -> ; FLOAT ID <pack-item-list>
-<pack-item-list> -> ; }
+	/* end of program */
+		<prog> -> EOF
 
-<def-args> -> BYTE   ID <def-args-list>
-<def-args> -> INT    ID <def-args-list>
-<def-args> -> FLOAT  ID <def-args-list>
-<def-args> -> ID     ID <def-args-list>
-<def-args> -> )
-<def-args-list> -> , BYTE   ID <def-args-list>
-<def-args-list> -> , INT    ID <def-args-list>
-<def-args-list> -> , FLOAT  ID <def-args-list>
-<def-args-list> -> , ID     ID <def-args-list>
-<def-args-list> -> )
+	/* package definition */
+		<prog> -> PACK ID { <pack-item> <prog>
 
-<args> -> <expr> <args-list>
-<args> -> )
-<args-list> -> , <expr> <args-list>
-<args-list> -> )
+		/* package item definition */
+			<pack-item> -> BYTE ID <pack-item-list>
+			<pack-item> -> INT ID <pack-item-list>
+			<pack-item> -> FLOAT ID <pack-item-list>
+				<pack-item-list> -> ; BYTE ID <pack-item-list>
+				<pack-item-list> -> ; INT ID <pack-item-list>
+				<pack-item-list> -> ; FLOAT ID <pack-item-list>
+				<pack-item-list> -> ; }
 
-<body> -> BYTE   ID ; <body>
-<body> -> BYTE   ID = <expr> ; <body>
-<body> -> INT    ID ; <body>
-<body> -> INT    ID = <expr> ; <body>
-<body> -> FLOAT  ID ; <body>
-<body> -> FLOAT  ID = <expr> ; <body>
-<body> -> ID     ID ; <body>
+		/* function definition arguments */
+			<def-args> -> BYTE   ID <def-args-list>
+			<def-args> -> INT    ID <def-args-list>
+			<def-args> -> FLOAT  ID <def-args-list>
+			<def-args> -> ID     ID <def-args-list>
+			<def-args> -> )
+				<def-args-list> -> , BYTE   ID <def-args-list>
+				<def-args-list> -> , INT    ID <def-args-list>
+				<def-args-list> -> , FLOAT  ID <def-args-list>
+				<def-args-list> -> , ID     ID <def-args-list>
+				<def-args-list> -> )
 
-<body> -> ID     = <expr> ; <body>
-<body> -> ID     ( <args> ; <body>
+		/* function call arguments */
+			<args> -> <expr> <args-list>
+			<args> -> )
+				<args-list> -> , <expr> <args-list>
+				<args-list> -> )
 
-<body> -> RETURN   <expr> ; <body>
-<body> -> IF     ( <expr> ) { <body> <body>
-<body> -> ELSE IF ( <expr> ) { <body> <body>
-<body> -> ELSE { <body> <body>
-<body> -> WHILE ( <expr> ) { <body> <body>
-<body> -> FOR   ( <expr> ; <expr> ; <expr> ) { <body> <body>
-<body> -> } 
+	/* function return type */
+		<func-type> -> BYTE
+		<func-type> -> INT
+		<func-type> -> FLOAT
+		<func-type> -> ID
+		<func-type> -> VOID
 
-<func-type> -> BYTE
-<func-type> -> INT
-<func-type> -> FLOAT
-<func-type> -> ID
-<func-type> -> VOID
+/* function body statements */
 
-//expects the first token to already be loaded
-//eats the last token which the expression cannot use for evaluating expression
-<expr> -> 
+	/* variable definition */
+		<body> -> BYTE   ID ; <body>
+		<body> -> BYTE   ID = <expr> ; <body>
+		<body> -> INT    ID ; <body>
+		<body> -> INT    ID = <expr> ; <body>
+		<body> -> FLOAT  ID ; <body>
+		<body> -> FLOAT  ID = <expr> ; <body>
+		<body> -> ID     ID ; <body>
+
+	/* statements */
+		<body> -> ID     = <expr> ; <body>
+		<body> -> ID     ( <args> ; <body>
+
+	/* branches */
+		<body> -> RETURN   <expr> ; <body>
+		<body> -> IF     ( <expr> ) { <body> <body>
+		<body> -> ELSE IF ( <expr> ) { <body> <body>
+		<body> -> ELSE { <body> <body>
+		<body> -> WHILE ( <expr> ) { <body> <body>
+		<body> -> FOR   ( <expr> ; <expr> ; <expr> ) { <body> <body>
+
+	/* end of body */
+		<body> -> } 
+
+/* expression */
+
+	//expects the first token to already be loaded
+	//eats the last token which the expression cannot use for evaluating expression
+	<expr> -> <expr> + <expr>
+	<expr> -> <expr> - <expr>
+	<expr> -> <expr> * <expr>
+	<expr> -> <expr> / <expr>
+	<expr> -> <expr> < <expr>
+	<expr> -> <expr> <= <expr>
+	<expr> -> <expr> > <expr>
+	<expr> -> <expr> >= <expr>
+	<expr> -> <expr> == <expr>
+	<expr> -> <expr> != <expr>
+
+	<expr> -> ID
+	<expr> -> NUMBER
+
+
+
+
+
+
+
+
+
+

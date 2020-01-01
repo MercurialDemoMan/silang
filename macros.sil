@@ -1,0 +1,7 @@
+$def ptr_t  int
+$def null   0
+
+int __builtin_error = 0;
+
+func error_set(int e): void { __builtin_error = e;    }
+func error_get():      int  { return __builtin_error; }

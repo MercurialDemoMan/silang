@@ -1,0 +1,29 @@
+$inc "lib.sil"
+
+##
+# calculate factorial
+##
+func fact(int n): int
+{
+	if(n == 1)
+	{
+		return n;
+	}
+	else
+	{
+		return n * fact(n - 1);
+	}
+}
+
+func main(int argc, ptr_t argv): int
+{
+	int iterations = 4 + argc * 200;
+
+	while(iterations < 10)
+	{
+		int res = fact(iterations);
+		iterations = iterations + 1;
+	}
+
+	return 0;
+}

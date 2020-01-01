@@ -1,0 +1,5 @@
+silang
+out/*.d
+out/*.o
+*.d
+*.o

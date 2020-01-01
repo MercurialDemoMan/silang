@@ -1,0 +1,17 @@
+$inc "macros.sil"
+
+func memcpy(int dest, int src, int size): void
+{
+	while(size)
+	{
+		dest = src;
+		dest = dest + 1;
+		src  = src  + 1;
+		size = size - 1;
+	}
+}
+
+func memget(int size): int
+{
+	return 0;
+}

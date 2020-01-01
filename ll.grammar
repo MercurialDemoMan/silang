@@ -1,0 +1,65 @@
+<prog> -> FUNC ID ( <def-args> : <func-type> { <body> <prog>
+<prog> -> BYTE   ID ; <prog>
+<prog> -> BYTE   ID = <expr> ; <prog>
+<prog> -> INT    ID ; <prog>
+<prog> -> INT    ID = <expr> ; <prog>
+<prog> -> FLOAT  ID ; <prog>
+<prog> -> FLOAT  ID = <expr> ; <prog>
+<prog> -> ID     ID ; <prog>
+<prog> -> EOF
+
+<prog> -> PACK ID { <pack-item> <prog>
+
+<pack-item> -> BYTE ID <pack-item-list>
+<pack-item> -> INT ID <pack-item-list>
+<pack-item> -> FLOAT ID <pack-item-list>
+
+<pack-item-list> -> ; BYTE ID <pack-item-list>
+<pack-item-list> -> ; INT ID <pack-item-list>
+<pack-item-list> -> ; FLOAT ID <pack-item-list>
+<pack-item-list> -> ; }
+
+<def-args> -> BYTE   ID <def-args-list>
+<def-args> -> INT    ID <def-args-list>
+<def-args> -> FLOAT  ID <def-args-list>
+<def-args> -> ID     ID <def-args-list>
+<def-args> -> )
+<def-args-list> -> , BYTE   ID <def-args-list>
+<def-args-list> -> , INT    ID <def-args-list>
+<def-args-list> -> , FLOAT  ID <def-args-list>
+<def-args-list> -> , ID     ID <def-args-list>
+<def-args-list> -> )
+
+<args> -> <expr> <args-list>
+<args> -> )
+<args-list> -> , <expr> <args-list>
+<args-list> -> )
+
+<body> -> BYTE   ID ; <body>
+<body> -> BYTE   ID = <expr> ; <body>
+<body> -> INT    ID ; <body>
+<body> -> INT    ID = <expr> ; <body>
+<body> -> FLOAT  ID ; <body>
+<body> -> FLOAT  ID = <expr> ; <body>
+<body> -> ID     ID ; <body>
+
+<body> -> ID     = <expr> ; <body>
+<body> -> ID     ( <args> ; <body>
+
+<body> -> RETURN   <expr> ; <body>
+<body> -> IF     ( <expr> ) { <body> <body>
+<body> -> ELSE IF ( <expr> ) { <body> <body>
+<body> -> ELSE { <body> <body>
+<body> -> WHILE ( <expr> ) { <body> <body>
+<body> -> FOR   ( <expr> ; <expr> ; <expr> ) { <body> <body>
+<body> -> } 
+
+<func-type> -> BYTE
+<func-type> -> INT
+<func-type> -> FLOAT
+<func-type> -> ID
+<func-type> -> VOID
+
+//expects the first token to already be loaded
+//eats the last token which the expression cannot use for evaluating expression
+<expr> -> 

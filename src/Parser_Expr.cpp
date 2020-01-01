@@ -1,7 +1,3 @@
-/**
- * \header expression evaluation using infix to postfix algorithm
- */
-
 #include "Parser.hpp"
 
 #include <vector>

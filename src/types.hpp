@@ -16,7 +16,7 @@ using f64 = double;
 using f32 = float;
 
 /**
- * \brief define number of registers
+ * \brief define number of registers which can be used for evaluating expression
  */
 #ifndef ARCH
 	#error "Architecture not specified"
@@ -27,7 +27,7 @@ using f32 = float;
 #endif
 
 /**
- * \brief standart extension
+ * \brief custom extension
  */
 namespace std
 {

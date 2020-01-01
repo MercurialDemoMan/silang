@@ -25,6 +25,7 @@ types.hpp module
 Preprocessor.hpp/Preprocessor.cpp module
 
 	Implements simple preprocessor for including files and defining constants.
+	Has simple scanner and parser mashed into one module.
 
 Scanner.hpp/Scanner.cpp module
 

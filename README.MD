@@ -16,35 +16,35 @@ Compiler
 
 Error.hpp/Error.cpp module
 	
-	Manages error printing and handling
+	Manages error printing and handling.
 
 types.hpp module
 
-	Defines useful typedefs and constants
+	Defines utility typedefs, functions and constants.
 
 Preprocessor.hpp/Preprocessor.cpp module
 
-	Implements simple preprocessor for including files and defining constants
+	Implements simple preprocessor for including files and defining constants.
 
 Scanner.hpp/Scanner.cpp module
 
-	Takes input file, divides it into tokens and is sending it sequentially based on parsers needs
+	Takes input file, divides it into tokens and sends them to parser based on his needs.
 
 Parser.hpp/Parser.cpp module
 
-	Heart of the whole program
-	Is requesting tokens from scanner, checking their sequence and generates intermediate code
+	Heart of the whole program.
+	Is requesting tokens from scanner, checking their sequence and generating intermediate code.
 
 Parser_Expr.cpp extension
 
-	Implements processing of expressions by converting infix to postfix expression + evaluation
-	of postfix expression
+	Implements processing of expressions by converting infix to postfix expression. 
+	Generates intermediate code.
 
 Codegen.hpp/Codegen.cpp module
 
-	Provides utility functions to parser to generate intermediate code
+	Provides utility functions to parser to generate intermediate code.
 
 main.cpp module
 
-	Start of the program 
+	Start of the program. 
 
